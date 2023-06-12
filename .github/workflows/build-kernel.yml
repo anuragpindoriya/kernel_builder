@@ -68,5 +68,5 @@ jobs:
       - name: Upload kernel to artifact
         uses: actions/upload-artifact@v3
         with:
-          name: PixelExp-Munch
+          name: PixelExp-Munch-KernelSU
           path: AnyKernel3/*
