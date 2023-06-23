@@ -1,9 +1,7 @@
 name: Build MikaKernel
 
-
 on:
   workflow_dispatch:
-
 
 jobs:
   build-kernel:
@@ -32,7 +30,7 @@ jobs:
 
       - name: Build kernel
         run: |
-          export KBUILD_BUILD_USER="zclkkk"
+          export KBUILD_BUILD_USER="An-Uknown"
           export KBUILD_BUILD_HOST="workspace"
           export PATH=$GITHUB_WORKSPACE/clang/bin:${PATH}
           args="                  ARCH=arm64 \
@@ -40,12 +38,13 @@ jobs:
                                   ${{ env.BUILD_ARGS }} \
                                   CLANG_TRIPLE=aarch64-linux-gnu- \
                                   CROSS_COMPILE=$GITHUB_WORKSPACE/aarch64-linux-android-4.9/bin/aarch64-linux-android- \
-                                  CROSS_COMPILE_ARM32=$GITHUB_WORKSPACE/arm-linux-androideabi-4.9/bin/arm-linux-androideabi- "
+                                  CROSS_COMPILE_ARM32=$GITHUB_WORKSPACE/arm-linux-androideabi-4.9/bin/arm-linux-androideabi- \
+                                  KCFLAGS=-Wunused-variable "
           cd kernel-source
-          
+
           #KernelSU support
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
-          
+
           make ${args} ${{ env.KERNEL_TARGET }}_defconfig
           make -j$(($(getconf _NPROCESSORS_ONLN) * 2)) ${args}
 
@@ -68,5 +67,5 @@ jobs:
       - name: Upload kernel to artifact
         uses: actions/upload-artifact@v3
         with:
-          name: PixelExp-Munch-KernelSU
+          name: ${{ env.FINAL_KERNEL_NAME }}-KernelSU
           path: AnyKernel3/*
